@@ -2,6 +2,8 @@ package Examen1OCunado;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.Vector;
+
 public class Controlador
 {
     private static  Scanner in = new Scanner(System.in);
@@ -121,7 +123,6 @@ public class Controlador
         newPersona.setNombre(nombre);
         newPersona.setDni(dni);
 
-
         DiaSemana newDiaSemana = null;
         boolean failed = true;
         while (failed)
@@ -138,7 +139,6 @@ public class Controlador
                 failed = false;
             }
         }
-
 
         System.out.println("\nIntroduce la fecha");//PREGUNTAMOS VARIABLES DE CITA Y LAS ASIGNAMOS
         String fecha = in.next();
