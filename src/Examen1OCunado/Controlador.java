@@ -46,9 +46,9 @@ public class Controlador
                         borrarCita();
                         break;
                     }
-                    catch(MapVacio exception)
+                    catch(MapVacio mapVacio)
                     {
-                        System.out.println("\nMapVacio Exception! (NO HAY CITAS QUE BORRAR EN EL MAP)");
+                        System.out.println(mapVacio.error() + " (NO HAY CITAS QUE BORRAR EN EL MAP)");
                         break;
                     }
                 }
@@ -59,9 +59,9 @@ public class Controlador
                         mostrarCitas();
                         break;
                     }
-                    catch(MapVacio exception)
+                    catch(MapVacio mapVacio)
                     {
-                        System.out.println("\nMapVacio Exception! (NO HAY CITAS QUE MOSTRAR EN EL MAP)");
+                        System.out.println(mapVacio.error()+" (NO HAY CITAS QUE MOSTRAR EN EL MAP)");
                         break;
                     }
                 }
