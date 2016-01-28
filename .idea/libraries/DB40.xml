@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="DB40">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../LIBRERIAS/DB40.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
