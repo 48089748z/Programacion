@@ -3,14 +3,10 @@ package ExamenDB4O;
 import com.db4o.Db4o;
 import com.db4o.ObjectContainer;
 import com.db4o.ObjectSet;
-import com.db4o.query.Constraint;
-import com.db4o.query.Constraints;
 import com.db4o.query.Query;
-import com.db4o.query.QueryComparator;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Comparator;
 import java.util.Scanner;
 
 /**
@@ -25,20 +21,15 @@ public class Controller
         Scanner in = new Scanner(System.in);
         while (!stop)
         {
-            System.out.println("\nMENU PRINCIPAL" +
-                    "\n1) CREAR JUGADOR" +
-                    "\n2) CREAR EQUIPO" +
-                    "\n3) MOSTRAR JUGADORES" +
-                    "\n4) MOSTRAR EQUIPOS " +
-                    "\n\n5) RETIRAR JUGADOR" +
-                    "\n6) TRASPASAR JUGADOR" +
-                    "\n7) AUGMENTAR CARACTERISTICAS" +
-                    "\n8) CAMBIAR EQUIPO DE LIGA "+
-                    "\n9) CAMBIAR ENTRENADOR DE EQUIPO"+
-                    "\n10) CAMBIAR PATROCINADOR DE LIGA DE X EQUIPO "+
-                    "\n11) "+
-                    "\n12) "+
-                    "\n\n0) SALIR");
+            System.out.println("\n| ------------------------------   MENU PRINCIPAL  ------------------------------ |"+
+                               "\n| (1)CREAR JUGADOR                (2)CREAR EQUIPO           (3)MOSTRAR JUGADORES  |"+
+                               "\n| (4)MOSTRAR EQUIPOS              (5)RETIRAR JUGADOR        (6)TRASPASAR JUGADOR  |"+
+                               "\n| (7)AUGMENTAR CARACTERISTICAS                          (8)CAMBIAR EQUIPO DE LIGA |"+
+                               "\n| (9)CAMBIAR ENTRENADOR DE EQUIPO                (10)CAMBIAR PATROCINADOR DE LIGA |"+
+                               "\n| (11)JUGADORES DE UN EQUIPO                  (12)JUGADORES DE DOS EQUIPOS (SODA) |"+
+                               "\n| (13)JUGADORES DE UN EQUIPO CON FUERZA <= 5      (14)CARACTERISTICAS JUGADOR DADO|"+
+                               "\n| (15)JUGADORES QUE ENTRENA UN ENTRENADOR                               (0) SALIR |"+
+                               "\n| ------------------------------------------------------------------------------- |");
             Integer option = in.nextInt();
             switch (option)
             {
@@ -89,7 +80,32 @@ public class Controller
                 }
                 case 10:
                 {
-                    //cambiarPatrocinadorLiga();
+                    cambiarPatrocinadorLiga();
+                    break;
+                }
+                case 11:
+                {
+                    jugadoresDeUnEquipo();
+                    break;
+                }
+                case 12:
+                {
+                    jugadoresDeDosEquipos();
+                    break;
+                }
+                case 13:
+                {
+                    jugadoresDeUnEquipoConFuerzaMenorOIgualQue5();
+                    break;
+                }
+                case 14:
+                {
+                    caracteristicasJugador();
+                    break;
+                }
+                case 15:
+                {
+                    jugadoresQueEntrenaUnEntrenador();
                     break;
                 }
                 case 0:
@@ -105,6 +121,143 @@ public class Controller
                 }
             }
         }
+    }
+    public static void jugadoresQueEntrenaUnEntrenador()
+    {
+        Scanner in = new Scanner(System.in);
+        System.out.println("Nombre Entrenador (String)");
+        String nombreEntrenador = in.nextLine();
+        openDatabase();
+
+        ObjectSet equipos = database.queryByExample(new Equipo());
+
+        System.out.println("\nJugadores que entrena el entrenador "+nombreEntrenador);
+        for (int x=0; x<equipos.size(); x++)
+        {
+            Equipo selected = (Equipo) equipos.get(x);
+            if (selected.getEntrenador().getNombre().equals(nombreEntrenador))
+            {
+                for (int y=0; y<selected.getJugadores().size(); y++)
+                {
+                    System.out.println(selected.getJugadores().get(y).toString());
+                }
+                break;
+            }
+        }
+    }
+    public static void caracteristicasJugador()
+    {
+        Scanner in = new Scanner(System.in);
+        System.out.println("Nombre Jugador (String)");
+        String nombreJugador = in.nextLine();
+        openDatabase();
+        ObjectSet jugadores = database.queryByExample(new Jugador());
+
+        System.out.println("\nCaracteristicas jugador "+nombreJugador);
+        for (int x=0; x<jugadores.size(); x++)
+        {
+            Jugador selected = (Jugador) jugadores.get(x);
+            if (selected.getNombre().equals(nombreJugador))
+            {
+                System.out.println(selected.getCaracteristicas().toString());
+                break;
+            }
+        }
+    }
+    public static void jugadoresDeUnEquipoConFuerzaMenorOIgualQue5()
+    {
+        Scanner in = new Scanner(System.in);
+        System.out.println("Nombre equipo (String)");
+        String nombreEquipo = in.nextLine();
+        openDatabase();
+        ObjectSet equipos = database.queryByExample(new Equipo());
+        Equipo selected = null;
+        for (int x=0; x<equipos.size(); x++)
+        {
+            selected = (Equipo) equipos.get(x);
+            if (selected.getNombre().equals(nombreEquipo))
+            {
+                break;
+            }
+        }
+        System.out.println("JUGADOR/ES EN EL EQUIPO "+nombreEquipo+" CON FUERZA <= 5");
+        for (int x=0; x<selected.getJugadores().size(); x++)
+        {
+            if (selected.getJugadores().get(x).getCaracteristicas().getFuerza()<=5)
+            {
+                System.out.println(selected.getJugadores().get(x).toString());
+            }
+        }
+        database.close();
+    }
+    public static void jugadoresDeDosEquipos()
+    {
+        Scanner in = new Scanner(System.in);
+        System.out.println("Nombre equipo 1 (String)");
+        String nombreEquipo1 = in.nextLine();
+        System.out.println("Nombre equipo 2 (String)");
+        String nombreEquipo2 = in.nextLine();
+        imprimeJugadoresDeElEquipo(nombreEquipo1);
+        imprimeJugadoresDeElEquipo(nombreEquipo2);
+    }
+    public static void imprimeJugadoresDeElEquipo(String nombreEquipo)
+    {
+        openDatabase();
+        ObjectSet equipos = database.queryByExample(new Equipo());
+        Equipo selected = null;
+        for (int x=0; x<equipos.size(); x++)
+        {
+            selected = (Equipo) equipos.get(x);
+            if (selected.getNombre().equals(nombreEquipo))
+            {
+                break;
+            }
+        }
+        System.out.println("\n"+selected.getJugadores().size()+ " JUGADOR/ES EN EL EQUIPO "+nombreEquipo);
+        for (int x=0; x<selected.getJugadores().size(); x++)
+        {
+            Integer num = x+1;
+            System.out.println("Jugador "+num+": "+selected.getJugadores().get(x).toString());
+        }
+        database.close();
+    }
+    public static void jugadoresDeUnEquipo()
+    {
+        Scanner in = new Scanner(System.in);
+        System.out.println("Nombre equipo (String)");
+        String nombreEquipo = in.nextLine();
+        openDatabase();
+        imprimeJugadoresDeElEquipo(nombreEquipo);
+    }
+    public static void cambiarPatrocinadorLiga()
+    {
+        Scanner in = new Scanner(System.in);
+        System.out.println("Nombre equipo (String)");
+        String nombreEquipo = in.nextLine();
+        System.out.println("Nombre Nuevo Patrocinador (String)");
+        String nombrePatrocinador = in.nextLine();
+        openDatabase();
+        ObjectSet equipos = database.queryByExample(new Equipo());
+
+        Equipo selected = null;
+        for (int x=0; x<equipos.size(); x++)
+        {
+            selected = (Equipo) equipos.get(x);
+            if (selected.getNombre().equals(nombreEquipo))
+            {
+                Liga liga = ((Equipo) equipos.get(x)).getLiga();
+                liga.setPatrocinador(nombrePatrocinador);
+                database.delete(equipos.get(x));
+                database.commit();
+                database.close();
+                break;
+            }
+        }
+        openDatabase();
+        database.store(selected);
+        database.commit();
+        database.close();
+        System.out.println("\nLiga "+selected.getLiga().getNombre()+" tiene ahora patrocinador "+nombrePatrocinador);
     }
     public static void cambiarEntrenadorDeEquipo()
     {
@@ -297,7 +450,7 @@ public class Controller
     }
     public static void openDatabase()
     {
-        File databaseFile = new File("/home/48089748z/Escriptori/IdeaProjects/Programacion/database.data");
+        File databaseFile = new File("C:\\Users\\uRi\\IdeaProjects\\Programacion\\database.data");
         if (!databaseFile.exists())
         {
             try
