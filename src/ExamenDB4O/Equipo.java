@@ -67,7 +67,7 @@ public class Equipo
         }
         else
         {
-            String toReturn = "";
+            String toReturn = " ";
             for (int x=0; x<jugadores.size(); x++)
             {
                 toReturn=toReturn+jugadores.get(x).getNombre()+"  ";

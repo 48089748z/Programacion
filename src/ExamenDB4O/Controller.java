@@ -3,9 +3,14 @@ package ExamenDB4O;
 import com.db4o.Db4o;
 import com.db4o.ObjectContainer;
 import com.db4o.ObjectSet;
+import com.db4o.query.Constraint;
+import com.db4o.query.Constraints;
+import com.db4o.query.Query;
+import com.db4o.query.QueryComparator;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.Scanner;
 
 /**
@@ -20,7 +25,20 @@ public class Controller
         Scanner in = new Scanner(System.in);
         while (!stop)
         {
-            System.out.println("\nMENU PRINCIPAL\n1) CREAR JUGADOR\n2) CREAR EQUIPO\n3) MOSTRAR JUGADORES\n4) MOSTRAR EQUIPOS \n\n5)RETIRAR JUGADOR\n6)TRASPASAR JUGADOR\n0) SALIR");
+            System.out.println("\nMENU PRINCIPAL" +
+                    "\n1) CREAR JUGADOR" +
+                    "\n2) CREAR EQUIPO" +
+                    "\n3) MOSTRAR JUGADORES" +
+                    "\n4) MOSTRAR EQUIPOS " +
+                    "\n\n5)RETIRAR JUGADOR" +
+                    "\n6)TRASPASAR JUGADOR" +
+                    "\n7)AUGMENTAR CARACTERISTICAS" +
+                    "\n8)CAMBIAR EQUIPO DE LIGA "+
+                    "\n9) "+
+                    "\n10) "+
+                    "\n11) "+
+                    "\n12) "+
+                    "\n\n0) SALIR");
             Integer option = in.nextInt();
             switch (option)
             {
@@ -54,6 +72,16 @@ public class Controller
                     traspasarJugador();
                     break;
                 }
+                case 7:
+                {
+                    augmentarCaracteristicas();
+                    break;
+                }
+                case 8:
+                {
+                    cambiarEquipoDeLiga();
+                    break;
+                }
                 case 0:
                 {
                     stop = true;
@@ -67,6 +95,74 @@ public class Controller
                 }
             }
         }
+    }
+    public static void cambiarEquipoDeLiga()
+    {
+        Scanner in = new Scanner(System.in);
+        System.out.println("Nombre equipo (String)");
+        String nombreEquipo = in.nextLine();
+        System.out.println("Nombre de Liga (String)");
+        String nombreLiga = in.nextLine();
+        openDatabase();
+        ObjectSet equipos = database.queryByExample(new Equipo());
+
+        Equipo selected = null;
+        for (int x=0; x<equipos.size(); x++)
+        {
+            selected = (Equipo) equipos.get(x);
+            if (selected.getNombre().equals(nombreEquipo))
+            {
+                Liga liga = ((Equipo) equipos.get(x)).getLiga();
+                liga.setNombre(nombreLiga);
+                database.delete(equipos.get(x));
+                database.commit();
+                database.close();
+                break;
+            }
+        }
+        openDatabase();
+        database.store(selected);
+        database.commit();
+        database.close();
+        System.out.println("\nEquipo "+selected.getNombre()+" cambiado de Liga");
+    }
+    public static void augmentarCaracteristicas()
+    {
+        Scanner in = new Scanner(System.in);
+        System.out.println("Introduce DNI JUGADOR (String)");
+        String dni = in.nextLine();
+        System.out.println("En cuanto quieres augmentar las Caracteristicas? (Integer)");
+        Integer cuanto = in.nextInt();
+        openDatabase();
+
+        Jugador byExample = new Jugador();
+        byExample.setDni(dni);
+
+        Jugador selected= null;
+        ObjectSet jugadores = database.queryByExample(new Jugador());
+        for (int x=0; x<jugadores.size();x++)
+        {
+            selected = (Jugador) jugadores.get(x);
+            if (selected.getDni().equals(dni))
+            {
+                Caracteristicas caracteristicas = ((Jugador) jugadores.get(x)).getCaracteristicas();
+                caracteristicas.setPenalti(caracteristicas.getPenalti()+cuanto);
+                caracteristicas.setPase(caracteristicas.getPase()+cuanto);
+                caracteristicas.setVelocidad(caracteristicas.getVelocidad()+cuanto);
+                caracteristicas.setFuerza(caracteristicas.getFuerza()+cuanto);
+                caracteristicas.setAgilidad(caracteristicas.getAgilidad()+cuanto);
+                selected.setCaracteristicas(caracteristicas);
+                database.delete(jugadores.get(x));
+                database.commit();
+                database.close();
+                break;
+            }
+        }
+        openDatabase();
+        database.store(selected);
+        database.commit();
+        database.close();
+        System.out.println("\nCaracteristicas augmentadas en "+cuanto+" puntos!");
     }
     public static void crearJugador()
     {
@@ -116,6 +212,7 @@ public class Controller
         jugador.setCaracteristicas(caracteristicas);
         guardarJugadorEnDB4O(jugador);
     }
+
     public static void crearEquipo()
     {
         Scanner in = new Scanner(System.in);
@@ -261,10 +358,13 @@ public class Controller
             if (selectedEquipo.getNombre().equals(nombreEquipo))
             {
                 database.delete(selectedEquipo);
+                database.commit();
+                database.close();
+                selectedEquipo.addJugador(selectedJugador);
                 break;
             }
         }
-        selectedEquipo.addJugador(selectedJugador);
+        openDatabase();
         database.store(selectedEquipo);
         database.commit();
         database.close();
