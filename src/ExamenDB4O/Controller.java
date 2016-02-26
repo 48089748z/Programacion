@@ -30,12 +30,12 @@ public class Controller
                     "\n2) CREAR EQUIPO" +
                     "\n3) MOSTRAR JUGADORES" +
                     "\n4) MOSTRAR EQUIPOS " +
-                    "\n\n5)RETIRAR JUGADOR" +
-                    "\n6)TRASPASAR JUGADOR" +
-                    "\n7)AUGMENTAR CARACTERISTICAS" +
-                    "\n8)CAMBIAR EQUIPO DE LIGA "+
-                    "\n9) "+
-                    "\n10) "+
+                    "\n\n5) RETIRAR JUGADOR" +
+                    "\n6) TRASPASAR JUGADOR" +
+                    "\n7) AUGMENTAR CARACTERISTICAS" +
+                    "\n8) CAMBIAR EQUIPO DE LIGA "+
+                    "\n9) CAMBIAR ENTRENADOR DE EQUIPO"+
+                    "\n10) CAMBIAR PATROCINADOR DE LIGA DE X EQUIPO "+
                     "\n11) "+
                     "\n12) "+
                     "\n\n0) SALIR");
@@ -82,6 +82,16 @@ public class Controller
                     cambiarEquipoDeLiga();
                     break;
                 }
+                case 9:
+                {
+                    cambiarEntrenadorDeEquipo();
+                    break;
+                }
+                case 10:
+                {
+                    //cambiarPatrocinadorLiga();
+                    break;
+                }
                 case 0:
                 {
                     stop = true;
@@ -95,6 +105,36 @@ public class Controller
                 }
             }
         }
+    }
+    public static void cambiarEntrenadorDeEquipo()
+    {
+        Scanner in = new Scanner(System.in);
+        System.out.println("Nombre equipo (String)");
+        String nombreEquipo = in.nextLine();
+        System.out.println("Nombre Nuevo Entrenador (String)");
+        String nombreEntrenador = in.nextLine();
+        openDatabase();
+        ObjectSet equipos = database.queryByExample(new Equipo());
+
+        Equipo selected = null;
+        for (int x=0; x<equipos.size(); x++)
+        {
+            selected = (Equipo) equipos.get(x);
+            if (selected.getNombre().equals(nombreEquipo))
+            {
+                Entrenador entrenador = ((Equipo) equipos.get(x)).getEntrenador();
+                entrenador.setNombre(nombreEntrenador);
+                database.delete(equipos.get(x));
+                database.commit();
+                database.close();
+                break;
+            }
+        }
+        openDatabase();
+        database.store(selected);
+        database.commit();
+        database.close();
+        System.out.println("\nEquipo "+selected.getNombre()+" tiene ahora entrenador "+nombreEntrenador);
     }
     public static void cambiarEquipoDeLiga()
     {
