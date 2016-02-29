@@ -11,7 +11,7 @@ import java.util.Scanner;
  */
 public class Controller
 {
-    private static String databasePath = "C:\\Users\\uRi\\IdeaProjects\\Programacion\\database.data";
+    private static String databasePath = "C:\\Users\\uRi\\IdeaProjects\\Programacion\\database.data"; //ESTA RUTA HAY QUE CAMBIARLA EN CADA ORDENADOR QUE SE EJECUTE
     private static ObjectContainer database;
     private static boolean stop = false;
     public static void main(String[] args)
@@ -542,14 +542,14 @@ public class Controller
             {
                 if (databaseFile.createNewFile())
                 {
-                    System.out.println("\nSE HA CREADO LA BASE DE DATOS");
+                    System.out.println("\nSE HA CREADO LA BASE DE DATOS.");
                     database = Db4o.openFile("database.data");
                 }
             } catch (IOException e) {}
         }
         else
         {
-            System.out.println("\nSE HA ABIERTO LA BASE DE DATOS");
+            System.out.println("\nSE HA ABIERTO LA BASE DE DATOS.");
             database = Db4o.openFile("database.data");
         }
     }
@@ -557,6 +557,7 @@ public class Controller
     {
         database.commit();
         database.close();
+        System.out.println("\nSE HA CERRADO LA BASE DE DATOS.");
     }
     public static void info()
     {
