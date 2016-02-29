@@ -11,6 +11,12 @@ import java.util.Scanner;
  */
 public class Controller
 {
+    /*
+        Query query = database.query();
+        query.constrain(Caracteristicas.class);
+        query.descend("fuerza").constrain(5).greater().equal();
+        outPrintSet(query.execute());
+     */
     private static String databasePath = "C:\\Users\\uRi\\IdeaProjects\\Programacion\\database.data"; //ESTA RUTA HAY QUE CAMBIARLA EN CADA ORDENADOR QUE SE EJECUTE
     private static ObjectContainer database;
     private static boolean stop = false;
@@ -50,14 +56,14 @@ public class Controller
                 case 3:
                 {
                     openDatabase();
-                    mostrarJugadores();
+                    outPrintSet(database.queryByExample(new Jugador()));
                     commitAndCloseDatabase();
                     break;
                 }
                 case 4:
                 {
                     openDatabase();
-                    mostrarEquipos();
+                    outPrintSet(database.queryByExample(new Equipo()));
                     commitAndCloseDatabase();
                     break;
                 }
@@ -146,7 +152,6 @@ public class Controller
                 }
                 default:
                 {
-                    System.out.println("\nOPCIÓN NO VALIDA!\nIntentalo de nuevo.");
                     info();
                     break;
                 }
@@ -158,12 +163,11 @@ public class Controller
         Scanner in = new Scanner(System.in);
         System.out.println("Nombre Entrenador (String)");
         String nombreEntrenador = in.nextLine();
-
-        ObjectSet equipos = database.queryByExample(new Equipo());
+        ObjectSet<Equipo> equipos = database.queryByExample(new Equipo());
         System.out.println("\nJugadores que entrena el entrenador "+nombreEntrenador);
         for (int x=0; x<equipos.size(); x++)
         {
-            Equipo selected = (Equipo) equipos.get(x);
+            Equipo selected = equipos.get(x);
             if (selected.getEntrenador().getNombre().equals(nombreEntrenador))
             {
                 for (int y=0; y<selected.getJugadores().size(); y++)
@@ -179,12 +183,12 @@ public class Controller
         Scanner in = new Scanner(System.in);
         System.out.println("Nombre Jugador (String)");
         String nombreJugador = in.nextLine();
-        ObjectSet jugadores = database.queryByExample(new Jugador());
+        ObjectSet<Jugador> jugadores = database.queryByExample(new Jugador());
 
         System.out.println("\nCaracteristicas jugador "+nombreJugador);
         for (int x=0; x<jugadores.size(); x++)
         {
-            Jugador selected = (Jugador) jugadores.get(x);
+            Jugador selected = jugadores.get(x);
             if (selected.getNombre().equals(nombreJugador))
             {
                 System.out.println(selected.getCaracteristicas().toString());
@@ -197,11 +201,11 @@ public class Controller
         Scanner in = new Scanner(System.in);
         System.out.println("Nombre equipo (String)");
         String nombreEquipo = in.nextLine();
-        ObjectSet equipos = database.queryByExample(new Equipo());
+        ObjectSet<Equipo> equipos = database.queryByExample(new Equipo());
         Equipo selected = null;
         for (int x=0; x<equipos.size(); x++)
         {
-            selected = (Equipo) equipos.get(x);
+            selected = equipos.get(x);
             if (selected.getNombre().equals(nombreEquipo))
             {
                 break;
@@ -215,6 +219,10 @@ public class Controller
                 System.out.println(selected.getJugadores().get(x).toString());
             }
         }
+    }
+    public static void outPrintSet(ObjectSet objectSet)
+    {
+        for (int x=0; x<objectSet.size(); x++) {System.out.println(objectSet.get(x).toString());}
     }
     public static void jugadoresDeDosEquipos()
     {
@@ -230,11 +238,11 @@ public class Controller
     }
     public static void imprimeJugadoresDeElEquipo(String nombreEquipo)
     {
-        ObjectSet equipos = database.queryByExample(new Equipo());
+        ObjectSet<Equipo> equipos = database.queryByExample(new Equipo());
         Equipo selected = null;
         for (int x=0; x<equipos.size(); x++)
         {
-            selected = (Equipo) equipos.get(x);
+            selected = equipos.get(x);
             if (selected.getNombre().equals(nombreEquipo))
             {
                 break;
@@ -261,15 +269,14 @@ public class Controller
         String nombreEquipo = in.nextLine();
         System.out.println("Nombre Nuevo Patrocinador (String)");
         String nombrePatrocinador = in.nextLine();
-        ObjectSet equipos = database.queryByExample(new Equipo());
-
+        ObjectSet<Equipo> equipos = database.queryByExample(new Equipo());
         Equipo selected = null;
         for (int x=0; x<equipos.size(); x++)
         {
-            selected = (Equipo) equipos.get(x);
+            selected = equipos.get(x);
             if (selected.getNombre().equals(nombreEquipo))
             {
-                Liga liga = ((Equipo) equipos.get(x)).getLiga();
+                Liga liga = (equipos.get(x)).getLiga();
                 liga.setPatrocinador(nombrePatrocinador);
                 database.delete(equipos.get(x));
                 commitAndCloseDatabase();
@@ -287,15 +294,15 @@ public class Controller
         String nombreEquipo = in.nextLine();
         System.out.println("Nombre Nuevo Entrenador (String)");
         String nombreEntrenador = in.nextLine();
-        ObjectSet equipos = database.queryByExample(new Equipo());
+        ObjectSet<Equipo> equipos = database.queryByExample(new Equipo());
 
         Equipo selected = null;
         for (int x=0; x<equipos.size(); x++)
         {
-            selected = (Equipo) equipos.get(x);
+            selected = equipos.get(x);
             if (selected.getNombre().equals(nombreEquipo))
             {
-                Entrenador entrenador = ((Equipo) equipos.get(x)).getEntrenador();
+                Entrenador entrenador = (equipos.get(x)).getEntrenador();
                 entrenador.setNombre(nombreEntrenador);
                 database.delete(equipos.get(x));
                 commitAndCloseDatabase();
@@ -313,15 +320,15 @@ public class Controller
         String nombreEquipo = in.nextLine();
         System.out.println("Nombre de Liga (String)");
         String nombreLiga = in.nextLine();
-        ObjectSet equipos = database.queryByExample(new Equipo());
+        ObjectSet<Equipo> equipos = database.queryByExample(new Equipo());
 
         Equipo selected = null;
         for (int x=0; x<equipos.size(); x++)
         {
-            selected = (Equipo) equipos.get(x);
+            selected = equipos.get(x);
             if (selected.getNombre().equals(nombreEquipo))
             {
-                Liga liga = ((Equipo) equipos.get(x)).getLiga();
+                Liga liga = (equipos.get(x)).getLiga();
                 liga.setNombre(nombreLiga);
                 database.delete(equipos.get(x));
                 commitAndCloseDatabase();
@@ -340,13 +347,13 @@ public class Controller
         System.out.println("En cuanto quieres augmentar las Caracteristicas? (Integer)");
         Integer cuanto = in.nextInt();
         Jugador selected= null;
-        ObjectSet jugadores = database.queryByExample(new Jugador());
+        ObjectSet<Jugador> jugadores = database.queryByExample(new Jugador());
         for (int x=0; x<jugadores.size();x++)
         {
-            selected = (Jugador) jugadores.get(x);
+            selected = jugadores.get(x);
             if (selected.getDni().equals(dni))
             {
-                Caracteristicas caracteristicas = ((Jugador) jugadores.get(x)).getCaracteristicas();
+                Caracteristicas caracteristicas = (jugadores.get(x)).getCaracteristicas();
                 caracteristicas.setPenalti(caracteristicas.getPenalti()+cuanto);
                 caracteristicas.setPase(caracteristicas.getPase()+cuanto);
                 caracteristicas.setVelocidad(caracteristicas.getVelocidad()+cuanto);
@@ -465,33 +472,15 @@ public class Controller
         System.out.println("\nEquipo guardado en DB4O!");
 
     }
-
-    public static void mostrarJugadores()
-    {
-        ObjectSet jugadores = database.queryByExample(new Jugador());
-        while (jugadores.hasNext())
-        {
-            System.out.println(jugadores.next().toString());
-        }
-    }
-
-    public static void mostrarEquipos()
-    {
-        ObjectSet equipos = database.queryByExample(new Equipo());
-        while (equipos.hasNext())
-        {
-            System.out.println(equipos.next().toString());
-        }
-    }
     public static void retirarJugador()
     {
         Scanner in = new Scanner(System.in);
         System.out.println("Introduce DNI JUGADOR a eliminar");
         String dni = in.nextLine();
-        ObjectSet jugadores = database.queryByExample(new Jugador());
+        ObjectSet<Jugador> jugadores = database.queryByExample(new Jugador());
         for (int x=0; x<jugadores.size();x++)
         {
-            Jugador selected = (Jugador) jugadores.get(x);
+            Jugador selected = jugadores.get(x);
             if (selected.getDni().equals(dni))
             {
                 System.out.println("\nELIMINADO JUGADOR:"+selected.toString());
@@ -506,21 +495,21 @@ public class Controller
         String dni = in.nextLine();
         System.out.println("Introduce NOMBRE EQUIPO a donde traspasa");
         String nombreEquipo = in.nextLine();
+        ObjectSet<Jugador> jugadores = database.queryByExample(new Jugador());
         Jugador selectedJugador = null;
-        ObjectSet jugadores = database.queryByExample(new Jugador());
         for (int x=0; x<jugadores.size();x++)
         {
-            selectedJugador = (Jugador) jugadores.get(x);
+            selectedJugador = jugadores.get(x);
             if (selectedJugador.getDni().equals(dni))
             {
                 break;
             }
         }
         Equipo selectedEquipo = null;
-        ObjectSet equipos = database.queryByExample(new Equipo());
+        ObjectSet<Equipo> equipos = database.queryByExample(new Equipo());
         for (int x=0; x<equipos.size(); x++)
         {
-            selectedEquipo = (Equipo) equipos.get(x);
+            selectedEquipo = equipos.get(x);
             if (selectedEquipo.getNombre().equals(nombreEquipo))
             {
                 database.delete(selectedEquipo);
@@ -561,6 +550,7 @@ public class Controller
     }
     public static void info()
     {
+        System.out.println("\nOPCIÓN NO VALIDA!\nIntentalo de nuevo.");
         System.out.print("\n|-------------------------------------------------------- PANTALLA DE INFORMACIÓN --------------------------------------------------------- |" +
                 "\n|      ESTAS SON LAS OPCIONES VALIDAS                                                                                                       |" +
                 "\n| 1:   Te permite crear un jugador, deberas asignarle todos los atributos que se pidan.                                                     |" +
