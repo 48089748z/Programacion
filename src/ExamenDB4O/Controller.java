@@ -16,7 +16,6 @@ public class Controller
     private static boolean stop = false;
     public static void main(String[] args)
     {
-
         Scanner in = new Scanner(System.in);
         while (!stop)
         {
@@ -25,9 +24,9 @@ public class Controller
                                "\n| (4)MOSTRAR EQUIPOS              (5)RETIRAR JUGADOR        (6)TRASPASAR JUGADOR  |"+
                                "\n| (7)AUGMENTAR CARACTERISTICAS                          (8)CAMBIAR EQUIPO DE LIGA |"+
                                "\n| (9)CAMBIAR ENTRENADOR DE EQUIPO                (10)CAMBIAR PATROCINADOR DE LIGA |"+
-                               "\n| (11)JUGADORES DE UN EQUIPO                  (12)JUGADORES DE DOS EQUIPOS (SODA) |"+
+                               "\n| (11)JUGADORES DE UN EQUIPO                         (12)JUGADORES DE DOS EQUIPOS |"+
                                "\n| (13)JUGADORES DE UN EQUIPO CON FUERZA <= 5      (14)CARACTERISTICAS JUGADOR DADO|"+
-                               "\n| (15)JUGADORES QUE ENTRENA UN ENTRENADOR                               (0) SALIR |"+
+                               "\n| (15)JUGADORES QUE ENTRENA UN ENTRENADOR   (0)SALIR      (OTRO NUMERO)INFORMACIÓN|"+
                                "\n| ------------------------------------------------------------------------------- |");
             Integer option =0;
             try{  option = in.nextInt();}
@@ -38,105 +37,105 @@ public class Controller
                 {
                     openDatabase();
                     crearJugador();
-                    commitAndClose();
+                    commitAndCloseDatabase();
                     break;
                 }
                 case 2:
                 {
                     openDatabase();
                     crearEquipo();
-                    commitAndClose();
+                    commitAndCloseDatabase();
                     break;
                 }
                 case 3:
                 {
                     openDatabase();
                     mostrarJugadores();
-                    commitAndClose();
+                    commitAndCloseDatabase();
                     break;
                 }
                 case 4:
                 {
                     openDatabase();
                     mostrarEquipos();
-                    commitAndClose();
+                    commitAndCloseDatabase();
                     break;
                 }
                 case 5:
                 {
                     openDatabase();
                     retirarJugador();
-                    commitAndClose();
+                    commitAndCloseDatabase();
                     break;
                 }
                 case 6:
                 {
                     openDatabase();
-                    traspasarJugador();
-                    commitAndClose();
+                    traspasarJugadorAUnEquipo();
+                    commitAndCloseDatabase();
                     break;
                 }
                 case 7:
                 {
                     openDatabase();
                     augmentarCaracteristicas();
-                    commitAndClose();
+                    commitAndCloseDatabase();
                     break;
                 }
                 case 8:
                 {
                     openDatabase();
                     cambiarEquipoDeLiga();
-                    commitAndClose();
+                    commitAndCloseDatabase();
                     break;
                 }
                 case 9:
                 {
                     openDatabase();
                     cambiarEntrenadorDeEquipo();
-                    commitAndClose();
+                    commitAndCloseDatabase();
                     break;
                 }
                 case 10:
                 {
                     openDatabase();
                     cambiarPatrocinadorLiga();
-                    commitAndClose();
+                    commitAndCloseDatabase();
                     break;
                 }
                 case 11:
                 {
                     openDatabase();
                     jugadoresDeUnEquipo();
-                    commitAndClose();
+                    commitAndCloseDatabase();
                     break;
                 }
                 case 12:
                 {
                     openDatabase();
                     jugadoresDeDosEquipos();
-                    commitAndClose();
+                    commitAndCloseDatabase();
                     break;
                 }
                 case 13:
                 {
                     openDatabase();
                     jugadoresDeUnEquipoConFuerzaMenorOIgualQue5();
-                    commitAndClose();
+                    commitAndCloseDatabase();
                     break;
                 }
                 case 14:
                 {
                     openDatabase();
                     caracteristicasJugador();
-                    commitAndClose();
+                    commitAndCloseDatabase();
                     break;
                 }
                 case 15:
                 {
                     openDatabase();
                     jugadoresQueEntrenaUnEntrenador();
-                    commitAndClose();
+                    commitAndCloseDatabase();
                     break;
                 }
                 case 0:
@@ -148,6 +147,7 @@ public class Controller
                 default:
                 {
                     System.out.println("\nOPCIÓN NO VALIDA!\nIntentalo de nuevo.");
+                    info();
                     break;
                 }
             }
@@ -224,7 +224,7 @@ public class Controller
         System.out.println("Nombre equipo 2 (String)");
         String nombreEquipo2 = in.nextLine();
         imprimeJugadoresDeElEquipo(nombreEquipo1);
-        commitAndClose();
+        commitAndCloseDatabase();
         openDatabase();
         imprimeJugadoresDeElEquipo(nombreEquipo2);
     }
@@ -272,7 +272,7 @@ public class Controller
                 Liga liga = ((Equipo) equipos.get(x)).getLiga();
                 liga.setPatrocinador(nombrePatrocinador);
                 database.delete(equipos.get(x));
-                commitAndClose();
+                commitAndCloseDatabase();
                 break;
             }
         }
@@ -298,7 +298,7 @@ public class Controller
                 Entrenador entrenador = ((Equipo) equipos.get(x)).getEntrenador();
                 entrenador.setNombre(nombreEntrenador);
                 database.delete(equipos.get(x));
-                commitAndClose();
+                commitAndCloseDatabase();
                 break;
             }
         }
@@ -324,7 +324,7 @@ public class Controller
                 Liga liga = ((Equipo) equipos.get(x)).getLiga();
                 liga.setNombre(nombreLiga);
                 database.delete(equipos.get(x));
-                commitAndClose();
+                commitAndCloseDatabase();
                 break;
             }
         }
@@ -339,9 +339,6 @@ public class Controller
         String dni = in.nextLine();
         System.out.println("En cuanto quieres augmentar las Caracteristicas? (Integer)");
         Integer cuanto = in.nextInt();
-        Jugador jugador = new Jugador();
-        jugador.setDni(dni);
-
         Jugador selected= null;
         ObjectSet jugadores = database.queryByExample(new Jugador());
         for (int x=0; x<jugadores.size();x++)
@@ -357,7 +354,7 @@ public class Controller
                 caracteristicas.setAgilidad(caracteristicas.getAgilidad()+cuanto);
                 selected.setCaracteristicas(caracteristicas);
                 database.delete(jugadores.get(x));
-                commitAndClose();
+                commitAndCloseDatabase();
                 break;
             }
         }
@@ -468,6 +465,7 @@ public class Controller
         System.out.println("\nEquipo guardado en DB4O!");
 
     }
+
     public static void mostrarJugadores()
     {
         ObjectSet jugadores = database.queryByExample(new Jugador());
@@ -476,6 +474,7 @@ public class Controller
             System.out.println(jugadores.next().toString());
         }
     }
+
     public static void mostrarEquipos()
     {
         ObjectSet equipos = database.queryByExample(new Equipo());
@@ -489,8 +488,6 @@ public class Controller
         Scanner in = new Scanner(System.in);
         System.out.println("Introduce DNI JUGADOR a eliminar");
         String dni = in.nextLine();
-        Jugador jugador = new Jugador();
-        jugador.setDni(dni);
         ObjectSet jugadores = database.queryByExample(new Jugador());
         for (int x=0; x<jugadores.size();x++)
         {
@@ -502,14 +499,14 @@ public class Controller
             }
         }
     }
-    public static void traspasarJugador()
+    public static void traspasarJugadorAUnEquipo()
     {
         Scanner in = new Scanner(System.in);
         System.out.println("Introduce DNI JUGADOR a traspasar");
         String dni = in.nextLine();
         System.out.println("Introduce NOMBRE EQUIPO a donde traspasa");
         String nombreEquipo = in.nextLine();
-        Jugador selectedJugador=null;
+        Jugador selectedJugador = null;
         ObjectSet jugadores = database.queryByExample(new Jugador());
         for (int x=0; x<jugadores.size();x++)
         {
@@ -519,7 +516,7 @@ public class Controller
                 break;
             }
         }
-        Equipo selectedEquipo=null;
+        Equipo selectedEquipo = null;
         ObjectSet equipos = database.queryByExample(new Equipo());
         for (int x=0; x<equipos.size(); x++)
         {
@@ -527,7 +524,7 @@ public class Controller
             if (selectedEquipo.getNombre().equals(nombreEquipo))
             {
                 database.delete(selectedEquipo);
-                commitAndClose();
+                commitAndCloseDatabase();
                 selectedEquipo.addJugador(selectedJugador);
                 break;
             }
@@ -543,19 +540,45 @@ public class Controller
         {
             try
             {
-                databaseFile.createNewFile();
-                database = Db4o.openFile("database.data");
-
+                if (databaseFile.createNewFile())
+                {
+                    System.out.println("\nSE HA CREADO LA BASE DE DATOS");
+                    database = Db4o.openFile("database.data");
+                }
             } catch (IOException e) {}
         }
         else
         {
+            System.out.println("\nSE HA ABIERTO LA BASE DE DATOS");
             database = Db4o.openFile("database.data");
         }
     }
-    public static void commitAndClose()
+    public static void commitAndCloseDatabase()
     {
         database.commit();
         database.close();
+    }
+    public static void info()
+    {
+        System.out.print("\n|-------------------------------------------------------- PANTALLA DE INFORMACIÓN --------------------------------------------------------- |" +
+                "\n|      ESTAS SON LAS OPCIONES VALIDAS                                                                                                       |" +
+                "\n| 1:   Te permite crear un jugador, deberas asignarle todos los atributos que se pidan.                                                     |" +
+                "\n| 2:   Te permite crear un equipo, deberas asignarle todos los atributos que se pidan.                                                      |" +
+                "\n| 3:   Te muestra una lista detallada de todos los Jugadores que hay guardados en la Base de Datos de DB4O.                                 |" +
+                "\n| 4:   Te muestra una lista detallada de todos los Equipos que hay guardados en la Base de Datos de DB4O.                                   |" +
+                "\n| 5:   Te permite eliminar un Jugador de la Base de Datos a partir de su DNI.                                                               |" +
+                "\n| 6:   Te permite traspasar un Jugador de un Equipo a otro, o simplemente asignarlo a un Equipo si este no estaba en ninguno anteriormente. |" +
+                "\n| 7:   Te permite augmentar las Caracteristicas del Jugador que quieras.                                                                    |" +
+                "\n| 8:   Te permite cambiar la a un Equipo de Liga en la que juega.                                                                           |" +
+                "\n| 9:   Te permite cambiar el Entrenador de el Equipo que quieras.                                                                           |" +
+                "\n| 10:  Te permite cambiar el Patrocinador de la Liga del Equipo que quieras.                                                                |" +
+                "\n| 11:  Te muestra una lista detallada de todos los Jugadores del Equipo que quieras.                                                        |" +
+                "\n| 12:  Te muestra una lista detallada de todos los Jugadores de los dos Equipos que quieras.                                                |" +
+                "\n| 13:  Te muestra una lista detallada de todos los Jugadores del Equipo que quieras, que además tengan una Fuerza menor o igual a 5.        |" +
+                "\n| 14:  Te muestra las Caracteristicas de el Jugador que quieras.                                                                            |" +
+                "\n| 15:  Te muestra los Jugadores a los que entrena el Entrenador que tu quieras buscar.                                                      |" +
+                "\n| 0:   Cierra la aplicación.                                                                                                                |" +
+                "\n|                                                                   CUALQUIER OTRO NUMERO QUE INTRODUZCAS TE ABRE ESTA PANTALLA DE AYUDA.   |" +
+                "\n|-------------------------------------------------------------------------------------------------------------------------------------------|");
     }
 }
