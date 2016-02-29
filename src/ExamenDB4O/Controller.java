@@ -1,23 +1,22 @@
 package ExamenDB4O;
-
 import com.db4o.Db4o;
 import com.db4o.ObjectContainer;
 import com.db4o.ObjectSet;
-import com.db4o.query.Query;
-
 import java.io.File;
 import java.io.IOException;
+import java.util.InputMismatchException;
 import java.util.Scanner;
-
 /**
  * Created by 48089748z on 26/02/16.
  */
 public class Controller
 {
+    private static String databasePath = "C:\\Users\\uRi\\IdeaProjects\\Programacion\\database.data";
     private static ObjectContainer database;
     private static boolean stop = false;
     public static void main(String[] args)
     {
+
         Scanner in = new Scanner(System.in);
         while (!stop)
         {
@@ -30,93 +29,125 @@ public class Controller
                                "\n| (13)JUGADORES DE UN EQUIPO CON FUERZA <= 5      (14)CARACTERISTICAS JUGADOR DADO|"+
                                "\n| (15)JUGADORES QUE ENTRENA UN ENTRENADOR                               (0) SALIR |"+
                                "\n| ------------------------------------------------------------------------------- |");
-            Integer option = in.nextInt();
+            Integer option =0;
+            try{  option = in.nextInt();}
+            catch (InputMismatchException e){System.out.println("\nSi sabes que has de poner un Integer, y pones otra cosa, te cierro el programa :)");}
             switch (option)
             {
                 case 1:
                 {
+                    openDatabase();
                     crearJugador();
+                    commitAndClose();
                     break;
                 }
                 case 2:
                 {
+                    openDatabase();
                     crearEquipo();
+                    commitAndClose();
                     break;
                 }
                 case 3:
                 {
+                    openDatabase();
                     mostrarJugadores();
+                    commitAndClose();
                     break;
                 }
                 case 4:
                 {
+                    openDatabase();
                     mostrarEquipos();
+                    commitAndClose();
                     break;
                 }
                 case 5:
                 {
+                    openDatabase();
                     retirarJugador();
+                    commitAndClose();
                     break;
                 }
                 case 6:
                 {
+                    openDatabase();
                     traspasarJugador();
+                    commitAndClose();
                     break;
                 }
                 case 7:
                 {
+                    openDatabase();
                     augmentarCaracteristicas();
+                    commitAndClose();
                     break;
                 }
                 case 8:
                 {
+                    openDatabase();
                     cambiarEquipoDeLiga();
+                    commitAndClose();
                     break;
                 }
                 case 9:
                 {
+                    openDatabase();
                     cambiarEntrenadorDeEquipo();
+                    commitAndClose();
                     break;
                 }
                 case 10:
                 {
+                    openDatabase();
                     cambiarPatrocinadorLiga();
+                    commitAndClose();
                     break;
                 }
                 case 11:
                 {
+                    openDatabase();
                     jugadoresDeUnEquipo();
+                    commitAndClose();
                     break;
                 }
                 case 12:
                 {
+                    openDatabase();
                     jugadoresDeDosEquipos();
+                    commitAndClose();
                     break;
                 }
                 case 13:
                 {
+                    openDatabase();
                     jugadoresDeUnEquipoConFuerzaMenorOIgualQue5();
+                    commitAndClose();
                     break;
                 }
                 case 14:
                 {
+                    openDatabase();
                     caracteristicasJugador();
+                    commitAndClose();
                     break;
                 }
                 case 15:
                 {
+                    openDatabase();
                     jugadoresQueEntrenaUnEntrenador();
+                    commitAndClose();
                     break;
                 }
                 case 0:
                 {
                     stop = true;
-                    database.close();
+                    System.out.println("CERRANDO PROGRAMA!");
                     break;
                 }
                 default:
                 {
-                    System.out.println("\nEntrada invalida intentalo de nuevo");
+                    System.out.println("\nOPCIÓN NO VALIDA!\nIntentalo de nuevo.");
                     break;
                 }
             }
@@ -127,10 +158,8 @@ public class Controller
         Scanner in = new Scanner(System.in);
         System.out.println("Nombre Entrenador (String)");
         String nombreEntrenador = in.nextLine();
-        openDatabase();
 
         ObjectSet equipos = database.queryByExample(new Equipo());
-
         System.out.println("\nJugadores que entrena el entrenador "+nombreEntrenador);
         for (int x=0; x<equipos.size(); x++)
         {
@@ -150,7 +179,6 @@ public class Controller
         Scanner in = new Scanner(System.in);
         System.out.println("Nombre Jugador (String)");
         String nombreJugador = in.nextLine();
-        openDatabase();
         ObjectSet jugadores = database.queryByExample(new Jugador());
 
         System.out.println("\nCaracteristicas jugador "+nombreJugador);
@@ -169,7 +197,6 @@ public class Controller
         Scanner in = new Scanner(System.in);
         System.out.println("Nombre equipo (String)");
         String nombreEquipo = in.nextLine();
-        openDatabase();
         ObjectSet equipos = database.queryByExample(new Equipo());
         Equipo selected = null;
         for (int x=0; x<equipos.size(); x++)
@@ -188,7 +215,6 @@ public class Controller
                 System.out.println(selected.getJugadores().get(x).toString());
             }
         }
-        database.close();
     }
     public static void jugadoresDeDosEquipos()
     {
@@ -198,11 +224,12 @@ public class Controller
         System.out.println("Nombre equipo 2 (String)");
         String nombreEquipo2 = in.nextLine();
         imprimeJugadoresDeElEquipo(nombreEquipo1);
+        commitAndClose();
+        openDatabase();
         imprimeJugadoresDeElEquipo(nombreEquipo2);
     }
     public static void imprimeJugadoresDeElEquipo(String nombreEquipo)
     {
-        openDatabase();
         ObjectSet equipos = database.queryByExample(new Equipo());
         Equipo selected = null;
         for (int x=0; x<equipos.size(); x++)
@@ -219,14 +246,12 @@ public class Controller
             Integer num = x+1;
             System.out.println("Jugador "+num+": "+selected.getJugadores().get(x).toString());
         }
-        database.close();
     }
     public static void jugadoresDeUnEquipo()
     {
         Scanner in = new Scanner(System.in);
         System.out.println("Nombre equipo (String)");
         String nombreEquipo = in.nextLine();
-        openDatabase();
         imprimeJugadoresDeElEquipo(nombreEquipo);
     }
     public static void cambiarPatrocinadorLiga()
@@ -236,7 +261,6 @@ public class Controller
         String nombreEquipo = in.nextLine();
         System.out.println("Nombre Nuevo Patrocinador (String)");
         String nombrePatrocinador = in.nextLine();
-        openDatabase();
         ObjectSet equipos = database.queryByExample(new Equipo());
 
         Equipo selected = null;
@@ -248,15 +272,12 @@ public class Controller
                 Liga liga = ((Equipo) equipos.get(x)).getLiga();
                 liga.setPatrocinador(nombrePatrocinador);
                 database.delete(equipos.get(x));
-                database.commit();
-                database.close();
+                commitAndClose();
                 break;
             }
         }
         openDatabase();
         database.store(selected);
-        database.commit();
-        database.close();
         System.out.println("\nLiga "+selected.getLiga().getNombre()+" tiene ahora patrocinador "+nombrePatrocinador);
     }
     public static void cambiarEntrenadorDeEquipo()
@@ -266,7 +287,6 @@ public class Controller
         String nombreEquipo = in.nextLine();
         System.out.println("Nombre Nuevo Entrenador (String)");
         String nombreEntrenador = in.nextLine();
-        openDatabase();
         ObjectSet equipos = database.queryByExample(new Equipo());
 
         Equipo selected = null;
@@ -278,15 +298,12 @@ public class Controller
                 Entrenador entrenador = ((Equipo) equipos.get(x)).getEntrenador();
                 entrenador.setNombre(nombreEntrenador);
                 database.delete(equipos.get(x));
-                database.commit();
-                database.close();
+                commitAndClose();
                 break;
             }
         }
         openDatabase();
         database.store(selected);
-        database.commit();
-        database.close();
         System.out.println("\nEquipo "+selected.getNombre()+" tiene ahora entrenador "+nombreEntrenador);
     }
     public static void cambiarEquipoDeLiga()
@@ -296,7 +313,6 @@ public class Controller
         String nombreEquipo = in.nextLine();
         System.out.println("Nombre de Liga (String)");
         String nombreLiga = in.nextLine();
-        openDatabase();
         ObjectSet equipos = database.queryByExample(new Equipo());
 
         Equipo selected = null;
@@ -308,16 +324,13 @@ public class Controller
                 Liga liga = ((Equipo) equipos.get(x)).getLiga();
                 liga.setNombre(nombreLiga);
                 database.delete(equipos.get(x));
-                database.commit();
-                database.close();
+                commitAndClose();
                 break;
             }
         }
         openDatabase();
         database.store(selected);
-        database.commit();
-        database.close();
-        System.out.println("\nEquipo "+selected.getNombre()+" cambiado de Liga");
+        System.out.println("\nEquipo "+selected.getNombre()+" cambiado a la Liga "+nombreLiga);
     }
     public static void augmentarCaracteristicas()
     {
@@ -326,10 +339,8 @@ public class Controller
         String dni = in.nextLine();
         System.out.println("En cuanto quieres augmentar las Caracteristicas? (Integer)");
         Integer cuanto = in.nextInt();
-        openDatabase();
-
-        Jugador byExample = new Jugador();
-        byExample.setDni(dni);
+        Jugador jugador = new Jugador();
+        jugador.setDni(dni);
 
         Jugador selected= null;
         ObjectSet jugadores = database.queryByExample(new Jugador());
@@ -346,15 +357,12 @@ public class Controller
                 caracteristicas.setAgilidad(caracteristicas.getAgilidad()+cuanto);
                 selected.setCaracteristicas(caracteristicas);
                 database.delete(jugadores.get(x));
-                database.commit();
-                database.close();
+                commitAndClose();
                 break;
             }
         }
         openDatabase();
         database.store(selected);
-        database.commit();
-        database.close();
         System.out.println("\nCaracteristicas augmentadas en "+cuanto+" puntos!");
     }
     public static void crearJugador()
@@ -448,91 +456,59 @@ public class Controller
 
         guardarEquipoEnDB4O(equipo);
     }
-    public static void openDatabase()
-    {
-        File databaseFile = new File("C:\\Users\\uRi\\IdeaProjects\\Programacion\\database.data");
-        if (!databaseFile.exists())
-        {
-            try
-            {
-                databaseFile.createNewFile();
-                database = Db4o.openFile("database.data");
 
-            } catch (IOException e) {}
-        }
-        else
-        {
-            database = Db4o.openFile("database.data");
-        }
-    }
     public static void guardarJugadorEnDB4O(Jugador jugador)
     {
-        openDatabase();
         database.store(jugador);
-        database.commit();
-        database.close();
         System.out.println("\nJugador guardado en DB4O!");
     }
     public static void guardarEquipoEnDB4O(Equipo equipo)
     {
-        openDatabase();
         database.store(equipo);
-        database.commit();
-        database.close();
         System.out.println("\nEquipo guardado en DB4O!");
 
     }
     public static void mostrarJugadores()
     {
-        openDatabase();
         ObjectSet jugadores = database.queryByExample(new Jugador());
         while (jugadores.hasNext())
         {
             System.out.println(jugadores.next().toString());
         }
-        database.close();
     }
     public static void mostrarEquipos()
     {
-        openDatabase();
         ObjectSet equipos = database.queryByExample(new Equipo());
         while (equipos.hasNext())
         {
             System.out.println(equipos.next().toString());
         }
-        database.close();
     }
     public static void retirarJugador()
     {
         Scanner in = new Scanner(System.in);
         System.out.println("Introduce DNI JUGADOR a eliminar");
         String dni = in.nextLine();
-
-        Jugador byExample = new Jugador();
-        byExample.setDni(dni);
-
+        Jugador jugador = new Jugador();
+        jugador.setDni(dni);
         ObjectSet jugadores = database.queryByExample(new Jugador());
         for (int x=0; x<jugadores.size();x++)
         {
             Jugador selected = (Jugador) jugadores.get(x);
             if (selected.getDni().equals(dni))
             {
+                System.out.println("\nELIMINADO JUGADOR:"+selected.toString());
                 database.delete(jugadores.get(x));
             }
         }
-        database.commit();
-        database.close();
     }
     public static void traspasarJugador()
     {
         Scanner in = new Scanner(System.in);
         System.out.println("Introduce DNI JUGADOR a traspasar");
         String dni = in.nextLine();
-
         System.out.println("Introduce NOMBRE EQUIPO a donde traspasa");
         String nombreEquipo = in.nextLine();
-
-        openDatabase();
         Jugador selectedJugador=null;
         ObjectSet jugadores = database.queryByExample(new Jugador());
         for (int x=0; x<jugadores.size();x++)
@@ -551,16 +527,35 @@ public class Controller
             if (selectedEquipo.getNombre().equals(nombreEquipo))
             {
                 database.delete(selectedEquipo);
-                database.commit();
-                database.close();
+                commitAndClose();
                 selectedEquipo.addJugador(selectedJugador);
                 break;
             }
         }
         openDatabase();
         database.store(selectedEquipo);
+        System.out.println("\nJugador "+selectedJugador.getNombre()+" asignado al Equipo "+selectedEquipo.getNombre());
+    }
+    public static void openDatabase()
+    {
+        File databaseFile = new File(databasePath);
+        if (!databaseFile.exists())
+        {
+            try
+            {
+                databaseFile.createNewFile();
+                database = Db4o.openFile("database.data");
+
+            } catch (IOException e) {}
+        }
+        else
+        {
+            database = Db4o.openFile("database.data");
+        }
+    }
+    public static void commitAndClose()
+    {
         database.commit();
         database.close();
-        System.out.println("\nJugador "+selectedJugador.getNombre()+" asignado al Equipo "+selectedEquipo.getNombre());
     }
 }
