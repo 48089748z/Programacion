@@ -2,6 +2,9 @@ package ExamenDB4O;
 import com.db4o.Db4o;
 import com.db4o.ObjectContainer;
 import com.db4o.ObjectSet;
+import com.db4o.query.Constraint;
+import com.db4o.query.Query;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.InputMismatchException;
@@ -14,8 +17,8 @@ public class Controller
     /*
         Query query = database.query();
         query.constrain(Caracteristicas.class);
-        query.descend("fuerza").constrain(5).greater().equal();
-        outPrintSet(query.execute());
+        query.descend("fuerza").constrain(5).smaller().equal();
+        imprimeEsteObjectSet(query.execute());
      */
     private static String databasePath = "C:\\Users\\uRi\\IdeaProjects\\Programacion\\database.data"; //ESTA RUTA HAY QUE CAMBIARLA EN CADA ORDENADOR QUE SE EJECUTE
     private static ObjectContainer database;
@@ -56,14 +59,14 @@ public class Controller
                 case 3:
                 {
                     openDatabase();
-                    outPrintSet(database.queryByExample(new Jugador()));
+                    imprimeEsteObjectSet(database.queryByExample(new Jugador()));
                     commitAndCloseDatabase();
                     break;
                 }
                 case 4:
                 {
                     openDatabase();
-                    outPrintSet(database.queryByExample(new Equipo()));
+                    imprimeEsteObjectSet(database.queryByExample(new Equipo()));
                     commitAndCloseDatabase();
                     break;
                 }
@@ -208,19 +211,19 @@ public class Controller
             selected = equipos.get(x);
             if (selected.getNombre().equals(nombreEquipo))
             {
+                System.out.println("JUGADOR/ES EN EL EQUIPO "+nombreEquipo+" CON FUERZA <= 5");
+                for (int y=0; y<selected.getJugadores().size(); y++)
+                {
+                    if (selected.getJugadores().get(y).getCaracteristicas().getFuerza()<=5)
+                    {
+                        System.out.println(selected.getJugadores().get(y).toString());
+                    }
+                }
                 break;
             }
         }
-        System.out.println("JUGADOR/ES EN EL EQUIPO "+nombreEquipo+" CON FUERZA <= 5");
-        for (int x=0; x<selected.getJugadores().size(); x++)
-        {
-            if (selected.getJugadores().get(x).getCaracteristicas().getFuerza()<=5)
-            {
-                System.out.println(selected.getJugadores().get(x).toString());
-            }
-        }
     }
-    public static void outPrintSet(ObjectSet objectSet)
+    public static void imprimeEsteObjectSet(ObjectSet objectSet)
     {
         for (int x=0; x<objectSet.size(); x++) {System.out.println(objectSet.get(x).toString());}
     }
@@ -245,14 +248,14 @@ public class Controller
             selected = equipos.get(x);
             if (selected.getNombre().equals(nombreEquipo))
             {
+                System.out.println("\n"+selected.getJugadores().size()+ " JUGADOR/ES EN EL EQUIPO "+nombreEquipo);
+                for (int y=0; y<selected.getJugadores().size(); y++)
+                {
+                    Integer num = x+1;
+                    System.out.println("Jugador "+num+": "+selected.getJugadores().get(y).toString());
+                }
                 break;
             }
-        }
-        System.out.println("\n"+selected.getJugadores().size()+ " JUGADOR/ES EN EL EQUIPO "+nombreEquipo);
-        for (int x=0; x<selected.getJugadores().size(); x++)
-        {
-            Integer num = x+1;
-            System.out.println("Jugador "+num+": "+selected.getJugadores().get(x).toString());
         }
     }
     public static void jugadoresDeUnEquipo()
