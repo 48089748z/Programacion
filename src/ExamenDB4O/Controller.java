@@ -37,8 +37,8 @@ public class Controller
                                "\n| (13)JUGADORES DE UN EQUIPO CON FUERZA <= 5      (14)CARACTERISTICAS JUGADOR DADO|"+
                                "\n| (15)JUGADORES QUE ENTRENA UN ENTRENADOR   (0)SALIR      (OTRO NUMERO)INFORMACIÓN|"+
                                "\n| ------------------------------------------------------------------------------- |");
-            Integer option =0;
-            try{  option = in.nextInt();}
+            Integer option = 0;
+            try{option = in.nextInt();}
             catch (InputMismatchException e){System.out.println("\nSi sabes que has de poner un Integer, y pones otra cosa, te cierro el programa :)");}
             switch (option)
             {
@@ -242,18 +242,13 @@ public class Controller
     public static void imprimeJugadoresDeElEquipo(String nombreEquipo)
     {
         ObjectSet<Equipo> equipos = database.queryByExample(new Equipo());
-        Equipo selected = null;
         for (int x=0; x<equipos.size(); x++)
         {
-            selected = equipos.get(x);
+            Equipo selected = equipos.get(x);
             if (selected.getNombre().equals(nombreEquipo))
             {
-                System.out.println("\n"+selected.getJugadores().size()+ " JUGADOR/ES EN EL EQUIPO "+nombreEquipo);
-                for (int y=0; y<selected.getJugadores().size(); y++)
-                {
-                    Integer num = x+1;
-                    System.out.println("Jugador "+num+": "+selected.getJugadores().get(y).toString());
-                }
+                System.out.println("\nHAY "+selected.getJugadores().size()+ " JUGADOR/ES EN EL EQUIPO "+nombreEquipo);
+                System.out.println(selected.getPlayersString());
                 break;
             }
         }

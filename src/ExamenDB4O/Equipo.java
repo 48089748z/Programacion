@@ -16,7 +16,7 @@ public class Equipo
 
     public String toString()
     {
-        return "\nEQUIPO\n{\n     Nombre: "+nombre+"\n     Estadio: "+estadio+"\n     Jugadores: ["+constructPlayersString()+"]"+entrenador.toString()+liga.toString()+"\n}";
+        return "\nEQUIPO\n{\n     Nombre: "+nombre+"\n     Estadio: "+estadio+"\n     "+getPlayersString()+entrenador.toString()+liga.toString()+"\n}";
     }
     public String getNombre() {
         return nombre;
@@ -59,7 +59,7 @@ public class Equipo
     public void setLiga(Liga liga) {
         this.liga = liga;
     }
-    public String constructPlayersString()
+    public String getPlayersString()
     {
         if (jugadores.size()==0)
         {
@@ -67,11 +67,12 @@ public class Equipo
         }
         else
         {
-            String toReturn = " ";
+            String toReturn = "Jugadores: [ ";
             for (int x=0; x<jugadores.size(); x++)
             {
-                toReturn=toReturn+jugadores.get(x).getNombre()+"  ";
+                toReturn=toReturn+jugadores.get(x).getNombre()+", ";
             }
+            toReturn=toReturn+"]";
             return toReturn;
         }
     }
