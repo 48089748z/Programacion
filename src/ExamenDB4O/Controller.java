@@ -17,7 +17,7 @@ public class Controller
         query.descend("fuerza").constrain(5).smaller().equal();
         imprimirObjectSet(query.execute());
      */
-    private static String databasePath = "C:\\Users\\uRi\\IdeaProjects\\Programacion\\database.data"; //ESTA RUTA HAY QUE CAMBIARLA EN CADA ORDENADOR QUE SE EJECUTE
+    private static String databasePath = "/home/48089748z/Escriptori/IdeaProjects/Programacion/Programacion/database.data"; //ESTA RUTA HAY QUE CAMBIARLA EN CADA ORDENADOR QUE SE EJECUTE
     private static ObjectContainer database;
     private static boolean stop = false;
     public static void main(String[] args)
@@ -41,6 +41,7 @@ public class Controller
             {
                 case 1:
                 {
+                    //Te permite crear un jugador, deberas asignarle todos los atributos que se pidan.
                     openDatabase();
                     crearJugador();
                     commitAndCloseDatabase();
@@ -48,6 +49,7 @@ public class Controller
                 }
                 case 2:
                 {
+                    //Te permite crear un equipo, deberas asignarle todos los atributos que se pidan.
                     openDatabase();
                     crearEquipo();
                     commitAndCloseDatabase();
@@ -55,6 +57,7 @@ public class Controller
                 }
                 case 3:
                 {
+                    //Te muestra una lista detallada de todos los Jugadores que hay guardados en la Base de Datos de DB4O.
                     openDatabase();
                     imprimirObjectSet(database.queryByExample(new Jugador()));
                     commitAndCloseDatabase();
@@ -62,6 +65,7 @@ public class Controller
                 }
                 case 4:
                 {
+                    //Te muestra una lista detallada de todos los Equipos que hay guardados en la Base de Datos de DB4O.
                     openDatabase();
                     imprimirObjectSet(database.queryByExample(new Equipo()));
                     commitAndCloseDatabase();
@@ -69,6 +73,7 @@ public class Controller
                 }
                 case 5:
                 {
+                    //Te permite eliminar un Jugador de la Base de Datos a partir de su DNI.
                     openDatabase();
                     borrarUnJugadorEnConcreto();
                     commitAndCloseDatabase();
@@ -76,6 +81,7 @@ public class Controller
                 }
                 case 6:
                 {
+                    //Te permite traspasar un Jugador de un Equipo a otro, o simplemente asignarlo a un Equipo si este no estaba en ninguno anteriormente.
                     openDatabase();
                     traspasarUnJugadorEnConcretoAUnEquipo();
                     commitAndCloseDatabase();
@@ -83,6 +89,7 @@ public class Controller
                 }
                 case 7:
                 {
+                    //Te permite augmentar las Caracteristicas del Jugador que quieras.
                     openDatabase();
                     augmentarCaracteristicasDeUnJugadorEnConcreto();
                     commitAndCloseDatabase();
@@ -90,6 +97,7 @@ public class Controller
                 }
                 case 8:
                 {
+                    //Te permite cambiar a un Equipo de Liga en la que juega.
                     openDatabase();
                     cambiarUnEquipoDeLiga();
                     commitAndCloseDatabase();
@@ -97,6 +105,7 @@ public class Controller
                 }
                 case 9:
                 {
+                    //Te permite cambiar el Entrenador de el Equipo que quieras.
                     openDatabase();
                     cambiarElEntrenadorDeUnEquipoEnConcreto();
                     commitAndCloseDatabase();
@@ -104,6 +113,7 @@ public class Controller
                 }
                 case 10:
                 {
+                    //Te permite cambiar el Patrocinador de la Liga del Equipo que quieras.
                     openDatabase();
                     cambiarPatrocinadorDeUnaLigaEnConcreto();
                     commitAndCloseDatabase();
@@ -111,6 +121,7 @@ public class Controller
                 }
                 case 11:
                 {
+                    //Te muestra una lista detallada de todos los Jugadores del Equipo que quieras.
                     openDatabase();
                     verTodosLosJugadoresDeUnEquipoEnConcreto();
                     commitAndCloseDatabase();
@@ -118,6 +129,7 @@ public class Controller
                 }
                 case 12:
                 {
+                    //Te muestra una lista detallada de todos los Jugadores de los dos Equipos que quieras.
                     openDatabase();
                     verTodosLosJugadoresDeDosEquiposEnConcreto();
                     commitAndCloseDatabase();
@@ -125,6 +137,7 @@ public class Controller
                 }
                 case 13:
                 {
+                    //Te muestra una lista detallada de todos los Jugadores del Equipo que quieras, que además tengan una Fuerza menor o igual a 5.
                     openDatabase();
                     verJugadoresDeUnEquipoEnConcretoConFuerzaMenorOIgualA5();
                     commitAndCloseDatabase();
@@ -132,6 +145,7 @@ public class Controller
                 }
                 case 14:
                 {
+                    //Te muestra todas las Caracteristicas de el Jugador que quieras.
                     openDatabase();
                     verCaracteristicasDeUnJugadorEnConcreto();
                     commitAndCloseDatabase();
@@ -139,6 +153,7 @@ public class Controller
                 }
                 case 15:
                 {
+                    //Te muestra todos los Jugadores a los que entrena el Entrenador que tu quieras buscar.
                     openDatabase();
                     verJugadoresQueEntrenaUnEntrenadorEnConcreto();
                     commitAndCloseDatabase();
@@ -146,12 +161,14 @@ public class Controller
                 }
                 case 0:
                 {
+                    //Cierra la aplicación.
                     stop = true;
                     System.out.println("CERRANDO PROGRAMA!");
                     break;
                 }
                 default:
                 {
+                    //CUALQUIER OTRO NUMERO QUE INTRODUZCAS TE ABRE PANTALLA DE AYUDA.
                     informacion();
                     break;
                 }
