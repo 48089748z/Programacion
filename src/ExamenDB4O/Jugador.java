@@ -1,7 +1,5 @@
 package ExamenDB4O;
 
-import com.db4o.ObjectContainer;
-
 /**
  * Created by 48089748z on 26/02/16.
  */

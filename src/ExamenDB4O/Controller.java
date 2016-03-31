@@ -17,7 +17,7 @@ public class Controller
         query.descend("fuerza").constrain(5).smaller().equal();
         imprimirObjectSet(query.execute());
      */
-    private static String databasePath = "/home/48089748z/Escriptori/IdeaProjects/Programacion/Programacion/database.data"; //ESTA RUTA HAY QUE CAMBIARLA EN CADA ORDENADOR QUE SE EJECUTE
+    private static String databasePath = "/home/48089748z/Escriptori/IdeaProjects/Programacion/src/ExamenDB4O/database.data"; //ESTA RUTA HAY QUE CAMBIARLA EN CADA ORDENADOR QUE SE EJECUTE
     private static ObjectContainer database;
     private static boolean stop = false;
     public static void main(String[] args)
@@ -475,6 +475,7 @@ public class Controller
 
     public static void guardarJugadorEnDB4O(Jugador jugador)
     {
+     //   openDatabase();
         database.store(jugador);
         System.out.println("\nJugador guardado en DB4O!");
     }
@@ -482,7 +483,6 @@ public class Controller
     {
         database.store(equipo);
         System.out.println("\nEquipo guardado en DB4O!");
-
     }
     public static void borrarUnJugadorEnConcreto()
     {
