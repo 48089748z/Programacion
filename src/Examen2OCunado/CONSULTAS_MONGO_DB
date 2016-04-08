@@ -1,0 +1,40 @@
+------------------------------------------------------------------------------------------------------------------
+
+EXAMEN MONGO DB 
+ORIOL CUÑADO
+
+------------------------------------------------------------------------------------------------------------------
+CREAMOS LA BASE DE DATOS CON NOMBRE 'orioldb'
+use orioldb
+
+CREAMOS LA COLECCIÓN CON NOMBRE 'oriolcollection'
+db.createCollection("oriolcollection", null)
+
+------------------------------------------------------------------------------------------------------------------
+IMPLEMENTACIÓN DEL DIAGRAMA CON RELACIÓN N a N, ES DECIR LOS INSERTS: 
+
+CREAMOS DOS GRUPOS ARMADOS, ETA Y ALQAEDA CADA UNO CON UN ARRAY DE IDS DE CONFLICTOS
+db.oriolcollection.insert({_id:0, nombre:"ETA", bajas:850, idConflictos:[2, 3, 4]});
+db.oriolcollection.insert({_id:1, nombre:"ALQAEDA", bajas:2000, idConflictos:[4, 5, 6]});
+
+AHORA CREAMOS 3 CONFLICTOS:
+db.oriolcollection.insert({_id:2, nombre:"Conflicto 1", heridos:10, zona:"Africa", idGruposArmados:[0,1]});
+db.oriolcollection.insert({_id:3, nombre:"Conflicto 2", heridos:40, zona:"Oriente Medio", idGruposArmados:[1]});
+db.oriolcollection.insert({_id:4, nombre:"Guerra Vietnam", heridos:10000, zona:"Vietnam", idGruposArmados:[0]});
+
+
+AHORA TENEMOS LA BBDD PREPARADA PARA LAS CONSULTAS Y SIGUIENDO EL PATRON DE DISEÑO PROPUESTO N-N
+
+------------------------------------------------------------------------------------------------------------------
+CONSULTAS:
+
+CONFLICTOS CON ZONA AFRICA U ORIENTE MEDIO:
+db.oriolcollection.find({$or:[{zona:"Africa"},{zona:"Oriente Medio"}]})
+
+CAMBIAR NOMBRE TODOS LOS CONFLICTOS CON NOMBRE GUERRA VIETNAM A INDOCHINA
+db.oriolcollection.update({nombre:"Guerra Vietnam"},{$set:{nombre:"Indochina"}})
+
+CREAR UN INDICE EN CONFLICTO UTILIZANDO EL CAMPO NOMBRE DE MANERA ASCENDENTE Y EN BACKGROUND
+db.oriolcollection.createIndex({nombre: "Indochina"},{background: true});
+
+------------------------------------------------------------------------------------------------------------------
