@@ -22,6 +22,7 @@ public class Controller
 		   System.out.println("\nOPENED DATABASE 'oriolDatabase'");
 		   collection = database.getCollection("oriolCollection");
 		   System.out.println("\nOPENED COLLECTION 'oriolCollection'");
+
 		   for (Document document: collection.find())
 		   {
 			   System.out.println(document.toJson());
