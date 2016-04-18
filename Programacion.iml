@@ -10,5 +10,6 @@
     <orderEntry type="library" name="DB401" level="project" />
     <orderEntry type="library" name="DB402" level="project" />
     <orderEntry type="library" name="DB403" level="project" />
+    <orderEntry type="library" name="MONGODB" level="project" />
   </component>
 </module>
