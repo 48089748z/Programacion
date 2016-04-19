@@ -1,16 +1,18 @@
-package Examen3OCunado;
+package Examen3OCunado.Activitat1;
+import com.mongodb.BasicDBObject;
+import com.mongodb.client.FindIterable;
 import org.bson.Document;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.ServerAddress;
-import java.util.InputMismatchException;
-import java.util.Scanner;
-public class Controller
+
+import java.util.*;
+
+public class MongoController
 {
 	private static boolean stop = false;
 	private static MongoClient client;
-	private static  MongoDatabase database;
 	private static  MongoCollection<Document> collection;
 	public static void main(String[] args) {menu();}
 	public static void openDatabase()
@@ -18,15 +20,10 @@ public class Controller
 	   try
 	   {
 		   client = new MongoClient(new ServerAddress("172.31.103.61"));
-		   database = client.getDatabase("oriolDatabase");
+		   MongoDatabase database = client.getDatabase("oriolDatabase");
 		   System.out.println("\nOPENED DATABASE 'oriolDatabase'");
 		   collection = database.getCollection("oriolCollection");
 		   System.out.println("\nOPENED COLLECTION 'oriolCollection'");
-
-		   for (Document document: collection.find())
-		   {
-			   System.out.println(document.toJson());
-		   }
 		   menu();
 	   }
 	   catch (Exception e) {e.printStackTrace();} finally{System.out.println("\nCLOSED DATABASE");client.close();}
@@ -41,7 +38,7 @@ public class Controller
 					"\n| (2)ALTA DE CONFLICTO |                                          |" +
 					"\n| (3)CONSULTA CONFLICTO POR NOMBRE Y MUESTRA SUS GRUPOS ARMADOS   |" +
 					"\n| (4)CONSULTA GRUPOS ARMADOS CON MÁS DE 300 BAJAS                 |" +
-					"\n|                                                                 |" +
+					"\n| (5)MOSTRAR TODO                                                 |" +
 					"\n| CUALQUIER OTRO NUMERO CIERRA EL PROGRAMA                        |" +
 					"\n| --------------------------------------------------------------- |");
 			Integer option = 0;
@@ -70,8 +67,13 @@ public class Controller
 				case 4:
 				{
 					openDatabase();
-					consultaGrupoArmado();
+					gruposArmadoConMasDe300Bajas();
 					break;
+				}
+				case 5:
+				{
+					openDatabase();
+					mostrarTodo();
 				}
 				default:
 				{
@@ -91,49 +93,61 @@ public class Controller
 		String codigo = in.nextLine();
 		System.out.println("\nIntroduce Bajas del Grupo Armado (INTEGER)");
 		String bajas = in.nextLine();
-		try
-		{
-			GrupoArmado grupoArmado = new GrupoArmado(nombre, Integer.parseInt(codigo), Integer.parseInt(bajas));
-			//STORE
-			//collection.aggregate(grupoArmado);
-			System.out.println("\nGRUPO ARMADO GUARDADO");
-		}
-		catch (NumberFormatException e){System.out.println("\nHas introducido algun String donde tenias que poner Integers :(");}
+
+		Map<String,Object> grupoArmado = new HashMap<>();
+		grupoArmado.put("_id", codigo);
+		grupoArmado.put("nombre", nombre);
+		grupoArmado.put("bajas", bajas);
+		collection.insertOne(new Document(grupoArmado));
 	}
 	public static void altaConflicto()
 	{
 		Scanner in = new Scanner (System.in);
-		System.out.println("\nIntroduce Codigo del Conflicto (INTEGER)");
-		String codigo = in.nextLine();
+
 		System.out.println("\nIntroduce Nombre del Conflicto (STRING)");
 		String nombre = in.nextLine();
 		System.out.println("\nIntroduce Zona del Conflicto (STRING)");
 		String zona = in.nextLine();
 		System.out.println("\nIntroduce Numero de Heridos en el Conflicto (INTEGER)");
 		String heridos = in.nextLine();
-		try
+		for (Document doc : collection.find())
 		{
-			Conflicto conflicto = new Conflicto(Integer.parseInt(codigo), nombre, zona, Integer.parseInt(heridos));
-			//STORE
-			System.out.println("\nCONFLICTO GUARDADO");
+			System.out.println(doc.toJson());
 		}
-		catch (NumberFormatException e)
-		{
-			System.out.println("\nHas introducido algun String donde tenias que poner Integers :(");
-		}
+		System.out.println("\nIntroduce Codigo del Conflicto (INTEGER)");
+		String codigo = in.nextLine();
+		Map<String,Object> conflicto = new HashMap<>();
+		conflicto.put("_id", codigo);
+		conflicto.put("nombre", nombre);
+		conflicto.put("zona", zona);
+		conflicto.put("heridos", heridos);
+		conflicto.put("Grupos Armados", Arrays.asList(codigo));
+		collection.insertOne(new Document(conflicto));
 	}
 	public static void consultaConflicto()
 	{
 		Scanner in = new Scanner (System.in);
 		System.out.println("\nIntroduce Nombre del Conflicto (STRING)");
 		String nombre = in.nextLine();
-
-		//CONSULTA CONFLICTO POR NOMBRE
-
-
+		FindIterable<Document> cursor = collection.find(new BasicDBObject("nombre", nombre));
+		for (Document document : cursor)
+			{
+			System.out.println(document.toJson());
+		}
 	}
-	public static void consultaGrupoArmado()
+	public static void gruposArmadoConMasDe300Bajas()
 	{
-	 //CONSULTA GRUPOS ARMADOS CON MAS DE 300 BAJAS
+		FindIterable<Document> cursor = collection.find(new BasicDBObject("heridos", new BasicDBObject("$gt", 300)));
+		for (Document document : cursor)
+		{
+			System.out.println(document.toJson());
+		}
+	}
+	public static void mostrarTodo()
+	{
+		for (Document doc : collection.find())
+		{
+			System.out.println(doc.toJson());
+		}
 	}
 }
