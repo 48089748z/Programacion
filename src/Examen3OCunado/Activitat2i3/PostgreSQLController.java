@@ -9,6 +9,10 @@ public class PostgreSQLController
 {
     /**----------------------------------------------------------- PARA HACERLO SIN JAVA -----------------------------------------------------------
      *----------------------------------------------------------------------------------------------------------------------------------------------
+     *
+     * CREATE DATABASE nombreBBDD;
+     * GRANT ALL PRIVILEGES ON DATABASE nombreBBDD TO USER tuUsuario;
+     *
      * ----- ACTIVDAD 2 ----->
      *
      *            CREATES->
