@@ -11,5 +11,6 @@
     <orderEntry type="library" name="DB402" level="project" />
     <orderEntry type="library" name="DB403" level="project" />
     <orderEntry type="library" name="MONGODB" level="project" />
+    <orderEntry type="library" name="POSTGRESQL-JDBC" level="project" />
   </component>
 </module>
